@@ -1,0 +1,21 @@
+name: Builder Pipeline
+on:
+  push: 
+    branches:
+      - main
+env:
+  gh_pat: ${{secrets.GH_PAT}}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+      - uses: actions/checkout@v3
+
+      - name: Build Docker Image
+      - run: docker build -t testproj:latest .
+
+      - name: push to docker
+      - run: |
+          
+ 
