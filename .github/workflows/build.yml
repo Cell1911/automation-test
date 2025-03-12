@@ -15,7 +15,7 @@ jobs:
         run: echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
       - name: Build Docker Image
-        run: docker build -t ghcr.io/Cell1911/node-deploy1:latest .
+        run: docker build -t ghcr.io/cell1911/node-deploy1:latest .
 
       - name: Push Docker Image
         run: docker push ghcr.io/cell1911/node-deploy1:latest
