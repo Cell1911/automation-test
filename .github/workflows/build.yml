@@ -5,6 +5,7 @@ on:
       - main
 env:
   gh_pat: ${{secrets.GH_PAT}}
+  
 jobs:
   build:
     runs-on: ubuntu-latest
