@@ -3,26 +3,19 @@ on:
   push: 
     branches:
       - main
-env:
-  gh_pat: ${{secrets.GH_PAT}}
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
       
-      - name: push to docker
-      - run: |
-          echo "${{env.gh_pat}}" | docker login ghcr.io -u "${{github.actor}} --password-stdin
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
       - name: Build Docker Image
-      - run: docker build -t testproj:latest .
+        run: docker build -t ghcr.io/Cell1911/node-deploy1:latest .
 
-      - name: push to docker
+      - name: Push Docker Image
         run: docker push ghcr.io/Cell1911/node-deploy1:latest
-        
-        
-          
- 
