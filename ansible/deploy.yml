@@ -1,0 +1,63 @@
+- name: Deploy Docker Container on EC2
+  hosts: web_servers
+  become: true
+  tasks:
+    - name: Update and upgrade system packages
+      apt:
+        update_cache: yes
+        upgrade: yes
+
+    - name: Install required dependencies
+      apt:
+        name:
+          - software-properties-common
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+        state: present
+
+    - name: Add Docker’s official GPG key
+      shell: |
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+    - name: Set up Docker repository
+      shell: |
+        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    - name: Update package index after adding Docker repo
+      apt:
+        update_cache: yes
+
+    - name: Install Docker engine
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Start Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add current user to the Docker group
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes
+
+    - name: Log into GitHub Container Registry (GHCR)
+      command: docker login ghcr.io -u "{{ ghcr_username }}" -p "{{ ghcr_token }}"
+      environment:
+        GHCR_USERNAME: "{{ ghcr_username }}"
+        GHCR_TOKEN: "{{ ghcr_token }}"
+
+    - name: Pull Docker Image from GHCR
+      command: docker pull ghcr.io/cell1911/node-deploy1:latest
+
+    - name: Stop and remove existing container (if running)
+      shell: |
+        docker ps -q --filter "name=node-deploy" | grep -q . && docker stop node-deploy && docker rm node-deploy || true
+
+    - name: Run Docker Container
+      command: docker run -d --name node-deploy -p 80:80 ghcr.io/cell1911/node-deploy1:latest
