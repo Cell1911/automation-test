@@ -49,6 +49,10 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+        
+      - name: List checked-out files
+        run: ls -R
+
 
       - name: Install Ansible
         run: sudo apt update && sudo apt install -y ansible
@@ -59,4 +63,5 @@ jobs:
           chmod 400 ~/my-key.pem
 
       - name: Run Ansible Playbook
-        run: ansible-playbook -i ~/ansible/inventory.ini ~/ansible/deploy.yml
+        run: ansible-playbook -i ansible/inventory.ini ansible/deploy.yml
+
