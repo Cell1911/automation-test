@@ -24,3 +24,9 @@ variable "aws_secret_key" {
   type        = string
   sensitive   = true
 }
+
+variable "enable_public_ip" {
+  description = "Enable public IP for the instance"
+  type        = bool
+  default     = true
+}
