@@ -45,13 +45,10 @@ jobs:
       - name: Debug - List terraform Directory
         run: ls -l $GITHUB_WORKSPACE/terraform
 
-      - name: Debug - Print Raw Terraform Output
-        run: terraform output -json
-        working-directory: terraform
-
       - name: Get Terraform Output (EC2 IP) and Save to File
         run: |
          mkdir -p terraform
+         terraform output -json
          RAW_OUTPUT=$(terraform output -json)  
          echo "Terraform Raw Output: $RAW_OUTPUT"
          EC2_IP=$(echo "$RAW_OUTPUT" | jq -r '.ec2_public_ip.value' 2>/dev/null)
