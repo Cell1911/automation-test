@@ -36,7 +36,7 @@ jobs:
         working-directory: terraform
 
       - name: Apply Terraform
-        run: terraform apply -auto-approve -var-file=terraform/terraform.tfvars
+        run: terraform apply -auto-approve -var-file=automation-test/terraform/terraform.tfvars
         working-directory: terraform
 
   deploy-ansible:
