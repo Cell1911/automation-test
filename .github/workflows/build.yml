@@ -45,27 +45,35 @@ jobs:
       - name: Debug - List terraform Directory
         run: ls -l $GITHUB_WORKSPACE/terraform
 
+      - name: Debug - Print Raw Terraform Output
+        run: terraform output -json
+        working-directory: terraform
+
       - name: Get Terraform Output (EC2 IP) and Save to File
         run: |
-          mkdir -p terraform  # Ensure the directory exists
-          EC2_IP=$(terraform output -json | jq -r '.ec2_public_ip.value')
-          if [[ -z "$EC2_IP" || "$EC2_IP" == "null" ]]; then
-          echo "Error: EC2 IP is empty or null!"
-          exit 1
-          fi
-          echo "$EC2_IP" > terraform/ec2_ip.txt
-          cat terraform/ec2_ip.txt  # Debugging: Print saved IP
+         mkdir -p terraform
+         RAW_OUTPUT=$(terraform output -json)  
+         echo "Terraform Raw Output: $RAW_OUTPUT"
+         EC2_IP=$(echo "$RAW_OUTPUT" | jq -r '.ec2_public_ip.value' 2>/dev/null)
+    
+         if [[ -z "$EC2_IP" || "$EC2_IP" == "null" ]]; then
+         echo "Error: EC2 IP is empty or null! Check Terraform output."
+         exit 1
+         fi
+
+         echo "$EC2_IP" > terraform/ec2_ip.txt
+         echo "Saved EC2 IP: $(cat terraform/ec2_ip.txt)"
         working-directory: terraform
-      
+
       - name: Commit EC2 IP to Repo
         run: |
-          mv terraform/ec2_ip.txt .
+         mv terraform/ec2_ip.txt .
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
           git add ec2_ip.txt
           git commit -m "Save EC2 IP from Terraform"
           git push
-        env:
+          env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
