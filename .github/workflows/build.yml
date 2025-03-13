@@ -55,8 +55,8 @@ jobs:
 
       - name: Configure SSH Key
         run: |
-          echo "${{ secrets.ANSIBLE_SSH_KEY }}" > ansible/my-key
-          chmod 400 automation-test/ansible/my-key
+          echo "${{ secrets.ANSIBLE_SSH_KEY }}" > ~/my-key.pem
+          chmod 400 ~/my-key.pem
 
       - name: Run Ansible Playbook
-        run: ansible-playbook -i ansible/inventory.ini ansible/deploy.yml
+        run: ansible-playbook -i ~/ansible/inventory.ini ~/ansible/deploy.yml
