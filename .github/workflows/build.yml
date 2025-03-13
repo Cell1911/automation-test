@@ -47,8 +47,13 @@ jobs:
 
       - name: Get Terraform Output (EC2 IP) and Save to File
         run: |
-          terraform output -json | jq -r '.ec2_public_ip.value' > terraform/ec2_ip.txt
-          ls -l terraform/  # Debugging: List directory contents
+          mkdir -p terraform  # Ensure the directory exists
+          EC2_IP=$(terraform output -json | jq -r '.ec2_public_ip.value')
+          if [[ -z "$EC2_IP" || "$EC2_IP" == "null" ]]; then
+          echo "Error: EC2 IP is empty or null!"
+          exit 1
+          fi
+          echo "$EC2_IP" > terraform/ec2_ip.txt
           cat terraform/ec2_ip.txt  # Debugging: Print saved IP
         working-directory: terraform
       
