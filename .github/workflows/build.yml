@@ -42,12 +42,12 @@ jobs:
           TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
           TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
 
-      - name: Get Terraform Output (EC2 IP)
-        id: get_ip
+      - name: Get Terraform Output (EC2 IP) and Save to File
         run: |
-          echo "EC2_IP=$(terraform output -json | jq -r '.ec2_public_ip')" >> $GITHUB_ENV
+          terraform output -json | jq -r '.ec2_public_ip.value' > terraform/ec2_ip.txt
+          ls -l terraform/  # Debugging: List directory contents
+          cat terraform/ec2_ip.txt  # Debugging: Print saved IP
         working-directory: terraform
-
       
       - name: Commit EC2 IP to Repo
         run: |
