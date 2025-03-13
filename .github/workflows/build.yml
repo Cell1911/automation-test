@@ -61,7 +61,12 @@ jobs:
         run: |
           echo "${{ secrets.ANSIBLE_SSH_KEY }}" > ~/my-key.pem
           chmod 400 ~/my-key.pem
+
+      - name: Debug - List Ansible Directory
+        run: ls -l $GITHUB_WORKSPACE/ansible
+
       - name: Run Ansible Playbook
-        run: ansible-playbook -i $GITHUB_WORKSPACE/test/ansible/inventory.ini $GITHUB_WORKSPACE/test/ansible/deploy.yml
+        run: ansible-playbook -i $GITHUB_WORKSPACE/ansible/inventory.ini $GITHUB_WORKSPACE/ansible/deploy.yml
+
 
 
