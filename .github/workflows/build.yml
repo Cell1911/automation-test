@@ -73,7 +73,7 @@ jobs:
       - name: Run Ansible Playbook without inventory.ini
         run: ansible-playbook -i "$EC2_IP," ansible/deploy.yml --user ubuntu --private-key ~/my-key.pem
         env:
-          EC2_IP: ${{ env.EC2_IP }
+          EC2_IP: ${{ env.EC2_IP }}
 
 
 
