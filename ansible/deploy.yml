@@ -1,5 +1,5 @@
 - name: Deploy Docker Container on EC2
-  hosts: web_servers
+  hosts: all
   become: true
   tasks:
     - name: Update and upgrade system packages
