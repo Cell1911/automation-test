@@ -13,3 +13,14 @@ variable "instance_type" {
 variable "ami_id" {
   default = "ami-0cb91c7de36eed2cb"  
 }
+
+variable "aws_access_key" {
+  description = "AWS Access Key"
+  type        = string
+}
+
+variable "aws_secret_key" {
+  description = "AWS Secret Key"
+  type        = string
+  sensitive   = true
+}
